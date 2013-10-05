@@ -28,6 +28,7 @@ Kinda `low-level` tlkio-client used by the hubot adapter [hubot-tlkio](https://g
   ```
     client.on 'init', (tlkio) ->
       console.log 'Init Done'
+      client.say 'I am online'
 
     client.on 'message', (message) ->
       console.log "#{message.text} from #{message.fromUser.name}"

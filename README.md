@@ -5,6 +5,12 @@ Kinda `low-level` tlkio-client used by the hubot adapter [hubot-tlkio](https://g
 
 # Getting Started
 
+  To install just use:
+
+  `npm install tlkio-client --save`
+
+# Sample
+
   ```
     TlkIoClient = require 'tlkio-client'
 

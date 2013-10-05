@@ -16,6 +16,9 @@ class TlkIOClient extends EventEmitter
         @emit 'init', tlkio
 
 
+  say : (message) ->
+    @connection.send message
+
   socketHost = 'ws.tlk.io'
   host       = 'http://tlk.io'
 
@@ -66,8 +69,9 @@ class TlkIOClient extends EventEmitter
           tlkio.user.avatar = config.user.avatar
 
           messagesRequest =
-            uri : host + '/' + room + '/messages'
-            room: room
+            uri   : host + '/' + room + '/messages'
+            room  : room
+            csrf  : tlkio.csrf
 
           tlkio.send = (message) ->
             messagesRequest.data = {body : message}

@@ -10,9 +10,11 @@ client = new TlkIoClient config
 
 client.on 'init', (tlkio) ->
   console.log 'Init Done'
+  client.say 'I am online'
 
 client.on 'message', (message) ->
   console.log "#{message.text} from #{message.fromUser.name}"
+
 
 client.on 'user_joined', (user) ->
   console.log "user_joined, #{user.id} #{user.name}"

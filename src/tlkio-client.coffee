@@ -7,7 +7,7 @@ WebSocketClient = require('websocket').client;
 
 
 class TlkIOClient extends EventEmitter
-  version : '0.0.1'
+  version : '0.0.2'
 
   constructor : (config) ->
     requestCsrfToken(config).then (tlkio) =>

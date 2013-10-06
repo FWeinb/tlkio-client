@@ -7,9 +7,14 @@ WebSocketClient = require('websocket').client;
 
 
 class TlkIOClient extends EventEmitter
-  version : '0.0.3'
+  version : '0.0.4'
 
   constructor : (config) ->
+    # Add a new cookie jar to the config.
+    # We need that to make sure all CsrfToken are made
+    # using a new session
+    config.jar  = request.jar()
+
     requestCsrfToken(config).then (tlkio) =>
       initWebSocketClient(tlkio, @).then =>
         @connection = tlkio
@@ -26,7 +31,7 @@ class TlkIOClient extends EventEmitter
     request (
       method : 'POST'
       uri : options.uri
-      jar : true
+      jar : options.jar
       headers :
         Origin : host
         Referer: host + '/' + options.room,
@@ -42,11 +47,13 @@ class TlkIOClient extends EventEmitter
 
     # Current room
     room = config.room
+    # Cookie jar
+    jar  = config.jar
 
     request (
       method : 'GET'
       uri : host + '/' + config.room
-      jar : true
+      jar : jar
     ), (error, response, body) =>
       # I know regex is bad, but it gets shit done...
       matchCsrf   = /<meta content="(.*?)" name="csrf-token" \/>/.exec body # Extract CSRF Token
@@ -64,6 +71,7 @@ class TlkIOClient extends EventEmitter
         room : room
         csrf : tlkio.csrf
         data : config.user
+        jar  : jar
       ), (error, response, body) =>
           tlkio.user        = JSON.parse body
           tlkio.user.avatar = config.user.avatar
@@ -72,10 +80,12 @@ class TlkIOClient extends EventEmitter
             uri   : host + '/' + room + '/messages'
             room  : room
             csrf  : tlkio.csrf
+            jar   : jar
 
           tlkio.send = (message) ->
             messagesRequest.data = {body : message}
-            postRequest(messagesRequest)
+            postRequest messagesRequest
+
 
           deferred.resolve tlkio
 
